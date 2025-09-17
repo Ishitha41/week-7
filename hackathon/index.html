@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-TECH | Smart Washing Machine Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-light: #00aaff;
+            --secondary: #00c853;
+            --secondary-light: #64dd17;
+            --text: #333;
+            --text-light: #666;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --header-bg: #ffffff;
+            --progress-bg: #e9ecef;
+            --success: #2e7d32;
+            --success-light: #e8f5e9;
+            --info: #0066cc;
+            --info-light: #e3f2fd;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #4dabf7;
+            --primary-light: #74c0fc;
+            --secondary: #51cf66;
+            --secondary-light: #8ce99a;
+            --text: #e9ecef;
+            --text-light: #adb5bd;
+            --bg: #121416;
+            --card-bg: #1e2125;
+            --header-bg: #1e2125;
+            --progress-bg: #343a40;
+            --success: #51cf66;
+            --success-light: #1c2b21;
+            --info: #4dabf7;
+            --info-light: #1a2837;
+            --shadow: rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--header-bg);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px var(--shadow);
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            color: var(--primary);
+            font-size: 32px;
+            animation: pulse 2s infinite;
+        }
+        
+        .logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--primary);
+        }
+        
+        .logo span {
+            color: var(--primary-light);
+        }
+        
+        .machine-info {
+            text-align: right;
+        }
+        
+        .machine-info h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .machine-info p {
+            font-size: 16px;
+            color: var(--text);
+            margin-top: 5px;
+        }
+        
+        .theme-switcher {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .theme-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            background: var(--progress-bg);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+        
+        .theme-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px var(--shadow);
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+        
+        .card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+        
+        .card-title i {
+            font-size: 24px;
+        }
+        
+        .sensors-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .sensor {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid var(--primary-light);
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        .sensor.water {
+            border-left-color: var(--primary);
+            animation-delay: 0.3s;
+        }
+        
+        .sensor.weight {
+            border-left-color: var(--secondary);
+            animation-delay: 0.5s;
+        }
+        
+        .sensor-title {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        .sensor-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .sensor-unit {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+        
+        .progress-container {
+            margin-top: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: var(--progress-bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .water-progress {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+        
+        .weight-progress {
+            background: linear-gradient(90deg, var(--secondary), var(--secondary-light));
+        }
+        
+        .optimization {
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 12px;
+            background: var(--success-light);
+            animation: fadeIn 0.8s ease-out 0.7s both;
+        }
+        
+        .optimization h3 {
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+        
+        .optimization p {
+            color: var(--success);
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .chart-container {
+            height: 250px;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            animation: fadeIn 0.8s ease-out 0.9s both;
+        }
+        
+        .stat:nth-child(2) {
+            animation-delay: 1.1s;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 15px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            animation: fadeIn 0.8s ease-out 1.3s both;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--progress-bg);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--text-light);
+            color: var(--card-bg);
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 14px;
+            animation: fadeIn 0.8s ease-out 1.5s both;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--success-light);
+            border-radius: 20px;
+            color: var(--success);
+            font-weight: 500;
+            margin-bottom: 20px;
+            animation: fadeIn 0.8s ease-out 0.5s both;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .washing-animation {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            height: 60px;
+        }
+        
+        .washer {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            animation: spin 4s linear infinite;
+        }
+        
+        .washer::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid var(--primary-light);
+            border-radius: 50%;
+        }
+        
+        .water-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary-light);
+            opacity: 0.6;
+            height: 40%;
+            transition: height 1s ease-in-out;
+        }
+        
+        .laundry {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+        }
+        
+        .laundry:nth-child(1) {
+            transform: rotate(0deg) translate(20px) rotate(0deg);
+            animation: bounce 2s infinite;
+        }
+        
+        .laundry:nth-child(2) {
+            transform: rotate(120deg) translate(20px) rotate(-120deg);
+            animation: bounce 2s infinite 0.3s;
+        }
+        
+        .laundry:nth-child(3) {
+            transform: rotate(240deg) translate(20px) rotate(-240deg);
+            animation: bounce 2s infinite 0.6s;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-water logo-icon"></i>
+                <h1>Clean<span>Wave</span> IoT</h1>
+            </div>
+            <div class="machine-info">
+                <h2>Connected Machine</h2>
+                <p>EcoWash Pro X900 • Serial: EW-2387-556</p>
+                <div class="theme-switcher">
+                    <button class="theme-btn active" data-theme="light">Light</button>
+                    <button class="theme-btn" data-theme="dark">Dark</button>
+                    <button class="theme-btn" data-theme="system">System</button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="washing-animation">
+            <div class="washer">
+                <div class="water-fill" id="waterAnimation"></div>
+                <div class="laundry"></div>
+                <div class="laundry"></div>
+                <div class="laundry"></div>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <h2>Real-time Metrics</h2>
+                </div>
+                
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Machine Running - Normal Operation</span>
+                </div>
+                
+                <div class="sensors-grid">
+                    <div class="sensor water">
+                        <div class="sensor-title">Water Level</div>
+                        <div class="sensor-value">42<span class="sensor-unit">L</span></div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>0L</span>
+                                <span>Optimal: 40L</span>
+                                <span>80L</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill water-progress" style="width: 52.5%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sensor weight">
+                        <div class="sensor-title">Laundry Weight</div>
+                        <div class="sensor-value">5.8<span class="sensor-unit">kg</span></div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>0kg</span>
+                                <span>Capacity: 8kg</span>
+                                <span>10kg</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill weight-progress" style="width: 58%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="optimization">
+                    <h3>Optimum Water-to-Weight Ratio</h3>
+                    <p>7.24 L/kg • Efficiency: 92%</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div class="stat-title">Water Saved</div>
+                        <div class="stat-value">12.4L</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-title">Energy Saved</div>
+                        <div class="stat-value">0.8kWh</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-cog"></i> Adjust Settings
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-history"></i> Cycle History
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    <h2>Water Efficiency Analytics</h2>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="efficiencyChart"></canvas>
+                </div>
+                
+                <div class="optimization" style="background: var(--info-light);">
+                    <h3 style="color: var(--info);">Recommended Adjustment</h3>
+                    <p style="color: var(--info);">Reduce water by 2L for optimal efficiency</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div class="stat-title">Current Cycle Time</div>
+                        <div class="stat-value">32 min</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-title">Estimated Finish</div>
+                        <div class="stat-value">14:25</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-play-circle"></i> Start Cycle
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-pause-circle"></i> Pause
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>CleanWave IoT Dashboard v2.1 • Connected to SmartHub • Last updated: <span id="current-time"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Theme switching functionality
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const htmlElement = document.documentElement;
+        
+        // Set theme based on user preference or system preference
+        function setTheme(theme) {
+            // Remove any existing theme
+            htmlElement.removeAttribute('data-theme');
+            
+            if (theme === 'system') {
+                // Check system preference
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    htmlElement.setAttribute('data-theme', 'dark');
+                } else {
+                    htmlElement.setAttribute('data-theme', 'light');
+                }
+            } else {
+                htmlElement.setAttribute('data-theme', theme);
+            }
+            
+            // Update active button
+            themeButtons.forEach(btn => {
+                if (btn.dataset.theme === theme) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Save preference to localStorage
+            localStorage.setItem('theme', theme);
+        }
+        
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+        
+        // Add event listeners to theme buttons
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTheme(btn.dataset.theme);
+            });
+        });
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (localStorage.getItem('theme') === 'system') {
+                setTheme('system');
+            }
+        });
+        
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeStr;
+        }
+        
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // Simulate sensor data updates
+        function updateSensorData() {
+            // Simulate small changes in water level and weight
+            const waterElement = document.querySelector('.water .sensor-value');
+            const weightElement = document.querySelector('.weight .sensor-value');
+            const waterFill = document.getElementById('waterAnimation');
+            
+            let waterValue = parseFloat(waterElement.textContent);
+            let weightValue = parseFloat(weightElement.textContent);
+            
+            // Random fluctuation for simulation
+            waterValue += (Math.random() - 0.5) * 0.5;
+            weightValue += (Math.random() - 0.5) * 0.1;
+            
+            // Keep values within reasonable bounds
+            waterValue = Math.max(35, Math.min(waterValue, 50));
+            weightValue = Math.max(5, Math.min(weightValue, 7));
+            
+            waterElement.innerHTML = waterValue.toFixed(1) + '<span class="sensor-unit">L</span>';
+            weightElement.innerHTML = weightValue.toFixed(1) + '<span class="sensor-unit">kg</span>';
+            
+            // Update progress bars
+            document.querySelector('.water-progress').style.width = `${(waterValue / 80) * 100}%`;
+            document.querySelector('.weight-progress').style.width = `${(weightValue / 10) * 100}%`;
+            
+            // Update washing animation
+            waterFill.style.height = `${(waterValue / 80) * 100}%`;
+            
+            // Update ratio
+            const ratio = waterValue / weightValue;
+            document.querySelector('.optimization p').textContent = `${ratio.toFixed(2)} L/kg • Efficiency: ${Math.min(100, Math.round(110 - ratio * 10))}%`;
+        }
+        
+        setInterval(updateSensorData, 3000);
+        
+        // Simple chart implementation
+        function initChart() {
+            const canvas = document.getElementById('efficiencyChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas dimensions
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            // Draw chart
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 40;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw axes
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
+            ctx.stroke();
+            
+            // Draw data line
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            
+            const data = [42, 38, 45, 40, 43, 38, 42];
+            const maxValue = 60;
+            
+            for (let i = 0; i < data.length; i++) {
+                const x = padding + (i * (width - 2 * padding) / (data.length - 1));
+                const y = height - padding - (data[i] / maxValue) * (height - 2 * padding);
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+                
+                // Draw data points
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary');
+                ctx.fill();
+            }
+            
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary');
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw labels
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
+            ctx.font = '12px Roboto';
+            ctx.textAlign = 'center';
+            ctx.fillText('Water Usage (L)', width / 2, height - 10);
+            
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Last 7 Cycles', 0, 0);
+            ctx.restore();
+        }
+        
+        // Initialize chart when page loads
+        window.onload = function() {
+            initChart();
+            updateSensorData(); // Initialize sensor data
+        };
+        
+        // Reinitialize chart on resize and theme change
+        window.addEventListener('resize', initChart);
+        
+        // Observe theme changes to redraw chart with correct colors
+        const observer = new MutationObserver(initChart);
+        observer.observe(document.documentElement, { 
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+    </script>
+</body>
+</html>
