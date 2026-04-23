@@ -1,0 +1,13 @@
+construct a binary search tree by inserting the following elements in the given order
+18,40,75,30,20,90,50
+a] show the bst after each insertion explain the comparision at every node
+b] after constructing the bst perform the following deletion operation
+   delete 20
+   delete 80
+   
+construct an avl tree by inserting the element 60,40,80,50,70,90,20,35,45 in the given order show the tree after each insertion with balance factor calculations after constructing the final avl perform the following 
+  insert 55,insert 85,delete 20,delete 60
+  
+  construct a red black tree by inserting the elements 10,15,9,12,13,79,45,36,22 in the given order show that the tree after each insertion withproper node coloring and any notations or re coloring performed  after obtainig the final tree further perform the operation a] insert 5,insert 3,delete 79,delete 10
+  
+  
